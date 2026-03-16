@@ -19,7 +19,7 @@
           pname = "zs-webui";
           inherit version;
           src = ./.;
-          npmDepsHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+          npmDepsHash = "sha256-3hu3EwMHFLS0dKMf/C4x0yctTqTHdKJ9WqzWT+Nhh5Q=";
           nodejs = pkgs.nodejs_24;
           installPhase = ''
             cp -r out $out
