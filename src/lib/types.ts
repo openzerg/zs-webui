@@ -120,12 +120,6 @@ export interface Collaborator {
   permissions: { admin: boolean; push: boolean; pull: boolean }
 }
 
-export interface Branch {
-  name: string
-  commit: { id: string; message: string }
-  protected: boolean
-}
-
 export interface Organization {
   id: number
   login: string
@@ -137,14 +131,6 @@ export interface OrgMember {
   id: number
   login: string
   full_name: string
-}
-
-export interface AccessToken {
-  id: number
-  name: string
-  sha1: string
-  token_last_eight: string
-  scopes: string[]
 }
 
 export interface CreateRepoRequest {
@@ -166,17 +152,6 @@ export interface AddCollaboratorRequest {
   permission?: string
 }
 
-export interface CreateBranchRequest {
-  branch: string
-  reference?: string
-}
-
 export interface CreateOrgRequest {
   name: string
-}
-
-export interface CreateTokenRequest {
-  username: string
-  name: string
-  scopes?: string[]
 }

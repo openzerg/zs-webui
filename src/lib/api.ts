@@ -1,16 +1,18 @@
-import { ApiResponse, Agent, StatsSummary, TokenUsage, CreateAgentRequest, ForgejoUser, Provider, ApiKey, CreateForgejoUserRequest, CreateProviderRequest, CreateApiKeyRequest, CreateApiKeyResponse, GitRepository, Collaborator, Branch, Organization, OrgMember, AccessToken, CreateRepoRequest, UpdateRepoRequest, TransferRepoRequest, AddCollaboratorRequest, CreateBranchRequest, CreateOrgRequest, CreateTokenRequest } from './types'
+import { ApiResponse, Agent, StatsSummary, TokenUsage, CreateAgentRequest, ForgejoUser, Provider, ApiKey, CreateForgejoUserRequest, CreateProviderRequest, CreateApiKeyRequest, CreateApiKeyResponse, GitRepository, Collaborator, Organization, OrgMember, CreateRepoRequest, UpdateRepoRequest, TransferRepoRequest, AddCollaboratorRequest, CreateOrgRequest } from './types'
 
 class ApiClient {
   private baseUrl: string
   private authHeader: string | null = null
 
   constructor() {
-    this.baseUrl = ''
     if (typeof window !== 'undefined') {
+      this.baseUrl = `${window.location.protocol}//${window.location.hostname}:17531`
       const auth = localStorage.getItem('auth')
       if (auth) {
         this.authHeader = 'Basic ' + auth
       }
+    } else {
+      this.baseUrl = ''
     }
   }
 
@@ -47,7 +49,7 @@ class ApiClient {
       headers['Authorization'] = this.authHeader
     }
 
-    const response = await fetch(path, {
+    const response = await fetch(`${this.baseUrl}${path}`, {
       ...options,
       headers,
     })
@@ -208,26 +210,6 @@ class ApiClient {
     return this.fetch<null>(`/api/git/repos/${owner}/${repo}/collaborators/${username}`, { method: 'DELETE' })
   }
 
-  // Git Branches
-  async listBranches(owner: string, repo: string): Promise<ApiResponse<Branch[]>> {
-    return this.fetch<Branch[]>(`/api/git/repos/${owner}/${repo}/branches`)
-  }
-
-  async createBranch(owner: string, repo: string, data: CreateBranchRequest): Promise<ApiResponse<Branch>> {
-    return this.fetch<Branch>(`/api/git/repos/${owner}/${repo}/branches`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-    })
-  }
-
-  async deleteBranch(owner: string, repo: string, branch: string): Promise<ApiResponse<null>> {
-    return this.fetch<null>(`/api/git/repos/${owner}/${repo}/branches/${branch}`, { method: 'DELETE' })
-  }
-
-  async protectBranch(owner: string, repo: string, branch: string): Promise<ApiResponse<null>> {
-    return this.fetch<null>(`/api/git/repos/${owner}/${repo}/branches/${branch}/protect`, { method: 'POST' })
-  }
-
   // Git Organizations
   async listOrgs(): Promise<ApiResponse<Organization[]>> {
     return this.fetch<Organization[]>('/api/git/orgs')
@@ -251,20 +233,6 @@ class ApiClient {
 
   async removeOrgMember(org: string, username: string): Promise<ApiResponse<null>> {
     return this.fetch<null>(`/api/git/orgs/${org}/members/${username}`, { method: 'DELETE' })
-  }
-
-  // Git Tokens
-  async listTokens(username?: string): Promise<ApiResponse<AccessToken[]>> {
-    const query = username ? `?username=${username}` : ''
-    return this.fetch<AccessToken[]>(`/api/git/tokens${query}`)
-  }
-
-  async createToken(data: CreateTokenRequest): Promise<ApiResponse<AccessToken>> {
-    return this.fetch<AccessToken>('/api/git/tokens', { method: 'POST', body: JSON.stringify(data) })
-  }
-
-  async deleteToken(username: string, id: number): Promise<ApiResponse<null>> {
-    return this.fetch<null>(`/api/git/tokens/${username}/${id}`, { method: 'DELETE' })
   }
 }
 

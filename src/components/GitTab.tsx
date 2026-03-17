@@ -4,16 +4,14 @@ import { useState } from 'react'
 import { Agent } from '@/lib/types'
 import { GitAccountsTab } from '@/components/GitAccountsTab'
 import { GitReposTab } from '@/components/GitReposTab'
-import { GitBranchesTab } from '@/components/GitBranchesTab'
 import { GitOrgsTab } from '@/components/GitOrgsTab'
-import { GitTokensTab } from '@/components/GitTokensTab'
-import { Users, GitBranch, Building, Key } from 'lucide-react'
+import { Users, GitBranch, Building } from 'lucide-react'
 
 interface GitTabProps {
   agents: Agent[]
 }
 
-type GitSubTab = 'accounts' | 'repos' | 'branches' | 'orgs' | 'tokens'
+type GitSubTab = 'accounts' | 'repos' | 'orgs'
 
 export function GitTab({ agents }: GitTabProps) {
   const [activeSubTab, setActiveSubTab] = useState<GitSubTab>('accounts')
@@ -21,9 +19,7 @@ export function GitTab({ agents }: GitTabProps) {
   const subTabs: { id: GitSubTab; label: string; icon: React.ReactNode }[] = [
     { id: 'accounts', label: 'Accounts', icon: <Users className="w-4 h-4" /> },
     { id: 'repos', label: 'Repos', icon: <GitBranch className="w-4 h-4" /> },
-    { id: 'branches', label: 'Branches', icon: <GitBranch className="w-4 h-4" /> },
     { id: 'orgs', label: 'Orgs', icon: <Building className="w-4 h-4" /> },
-    { id: 'tokens', label: 'Tokens', icon: <Key className="w-4 h-4" /> },
   ]
 
   return (
@@ -47,9 +43,7 @@ export function GitTab({ agents }: GitTabProps) {
 
       {activeSubTab === 'accounts' && <GitAccountsTab agents={agents} />}
       {activeSubTab === 'repos' && <GitReposTab />}
-      {activeSubTab === 'branches' && <GitBranchesTab />}
       {activeSubTab === 'orgs' && <GitOrgsTab />}
-      {activeSubTab === 'tokens' && <GitTokensTab />}
     </div>
   )
 }
