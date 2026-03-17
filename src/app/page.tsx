@@ -71,10 +71,10 @@ export default function Dashboard() {
     }
   }, [fetchData, isAuthenticated, authLoading, router])
 
-  const handleCreateAgent = async (name: string, forgejoUsername?: string) => {
+  const handleCreateAgent = async (name: string) => {
     setIsCreating(true)
     try {
-      const result = await api.createAgent({ name, forgejo_username: forgejoUsername })
+      const result = await api.createAgent({ name })
       if (result.success) {
         setIsModalOpen(false)
         fetchData()
@@ -181,6 +181,7 @@ export default function Dashboard() {
                   onEnable={handleEnableAgent}
                   onDisable={handleDisableAgent}
                   onDelete={handleDeleteAgent}
+                  onRefresh={fetchData}
                 />
               </CardContent>
             </Card>

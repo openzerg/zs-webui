@@ -1,11 +1,18 @@
 export interface Agent {
   name: string
   enabled: boolean
-  http_port: number
   container_ip: string
   host_ip: string
   forgejo_username: string | null
   online: boolean
+}
+
+export interface Checkpoint {
+  id: string
+  agent_name: string
+  description: string
+  created_at: string
+  btrfs_snapshot: string
 }
 
 export interface ApiResponse<T> {
@@ -154,4 +161,16 @@ export interface AddCollaboratorRequest {
 
 export interface CreateOrgRequest {
   name: string
+}
+
+export interface CreateCheckpointRequest {
+  description?: string
+}
+
+export interface RollbackRequest {
+  checkpoint_id: string
+}
+
+export interface CloneCheckpointRequest {
+  new_name: string
 }

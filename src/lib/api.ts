@@ -1,4 +1,4 @@
-import { ApiResponse, Agent, StatsSummary, TokenUsage, CreateAgentRequest, ForgejoUser, Provider, ApiKey, CreateForgejoUserRequest, CreateProviderRequest, CreateApiKeyRequest, CreateApiKeyResponse, GitRepository, Collaborator, Organization, OrgMember, CreateRepoRequest, UpdateRepoRequest, TransferRepoRequest, AddCollaboratorRequest, CreateOrgRequest } from './types'
+import { ApiResponse, Agent, StatsSummary, CreateAgentRequest, ForgejoUser, Provider, ApiKey, CreateForgejoUserRequest, CreateProviderRequest, CreateApiKeyRequest, GitRepository, Collaborator, Organization, OrgMember, CreateRepoRequest, UpdateRepoRequest, TransferRepoRequest, AddCollaboratorRequest, CreateOrgRequest, Checkpoint, CreateCheckpointRequest, CloneCheckpointRequest } from './types'
 
 class ApiClient {
   private baseUrl: string
@@ -94,10 +94,6 @@ class ApiClient {
     return this.fetch<StatsSummary>('/api/stats/summary')
   }
 
-  async getAgentStats(name: string): Promise<ApiResponse<TokenUsage[]>> {
-    return this.fetch<TokenUsage[]>(`/api/agents/${name}/stats`)
-  }
-
   async listForgejoUsers(): Promise<ApiResponse<ForgejoUser[]>> {
     return this.fetch<ForgejoUser[]>('/api/git/users')
   }
@@ -154,8 +150,8 @@ class ApiClient {
     return this.fetch<ApiKey[]>('/api/llm/keys')
   }
 
-  async createApiKey(data: CreateApiKeyRequest): Promise<ApiResponse<CreateApiKeyResponse>> {
-    return this.fetch<CreateApiKeyResponse>('/api/llm/keys', {
+  async createApiKey(data: CreateApiKeyRequest): Promise<ApiResponse<string>> {
+    return this.fetch<string>('/api/llm/keys', {
       method: 'POST',
       body: JSON.stringify(data),
     })
@@ -233,6 +229,40 @@ class ApiClient {
 
   async removeOrgMember(org: string, username: string): Promise<ApiResponse<null>> {
     return this.fetch<null>(`/api/git/orgs/${org}/members/${username}`, { method: 'DELETE' })
+  }
+
+  // Checkpoints
+  async createCheckpoint(agentName: string, description?: string): Promise<ApiResponse<Checkpoint>> {
+    return this.fetch<Checkpoint>(`/api/agents/${agentName}/checkpoint`, {
+      method: 'POST',
+      body: JSON.stringify({ description }),
+    })
+  }
+
+  async listCheckpoints(agentName: string): Promise<ApiResponse<Checkpoint[]>> {
+    return this.fetch<Checkpoint[]>(`/api/agents/${agentName}/checkpoints`)
+  }
+
+  async rollbackAgent(agentName: string, checkpointId: string): Promise<ApiResponse<null>> {
+    return this.fetch<null>(`/api/agents/${agentName}/rollback`, {
+      method: 'POST',
+      body: JSON.stringify({ checkpoint_id: checkpointId }),
+    })
+  }
+
+  async deleteCheckpoint(checkpointId: string): Promise<ApiResponse<null>> {
+    return this.fetch<null>(`/api/checkpoints/${checkpointId}`, { method: 'DELETE' })
+  }
+
+  async cloneCheckpoint(checkpointId: string, newName: string): Promise<ApiResponse<Agent>> {
+    return this.fetch<Agent>(`/api/checkpoints/${checkpointId}/clone`, {
+      method: 'POST',
+      body: JSON.stringify({ new_name: newName }),
+    })
+  }
+
+  async listAllCheckpoints(): Promise<ApiResponse<Checkpoint[]>> {
+    return this.fetch<Checkpoint[]>('/api/checkpoints')
   }
 }
 

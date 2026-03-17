@@ -42,7 +42,7 @@ export function LlmKeysTab({ providers, onKeysChange }: LlmKeysTabProps) {
       if (res.success && res.data) {
         setIsModalOpen(false)
         setFormData({ name: '', provider_id: '' })
-        setNewKey(res.data.key)
+        setNewKey(res.data)
         setIsShowModalOpen(true)
         loadKeys()
         onKeysChange?.()
