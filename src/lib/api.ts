@@ -1,4 +1,4 @@
-import { ApiResponse, Agent, StatsSummary, CreateAgentRequest, ForgejoUser, Provider, ApiKey, CreateForgejoUserRequest, CreateProviderRequest, CreateApiKeyRequest, GitRepository, Collaborator, Organization, OrgMember, CreateRepoRequest, UpdateRepoRequest, TransferRepoRequest, AddCollaboratorRequest, CreateOrgRequest, Checkpoint, CreateCheckpointRequest, CloneCheckpointRequest, Skill, CreateSkillRequest, InvokeSkillRequest, InvokeSkillResponse, SetSecretRequest, UploadFileRequest, AuthorizeRequest } from './types'
+import { ApiResponse, Agent, StatsSummary, CreateAgentRequest, ForgejoUser, Provider, ApiKey, CreateForgejoUserRequest, CreateProviderRequest, CreateApiKeyRequest, GitRepository, Collaborator, Organization, OrgMember, CreateRepoRequest, UpdateRepoRequest, TransferRepoRequest, AddCollaboratorRequest, CreateOrgRequest, Checkpoint, CreateCheckpointRequest, CloneCheckpointRequest, Tool, CreateToolRequest, InvokeToolRequest, InvokeToolResponse, SetEnvRequest, AuthorizeRequest, Skill, CreateSkillRequest } from './types'
 
 class ApiClient {
   private baseUrl: string
@@ -265,13 +265,73 @@ class ApiClient {
     return this.fetch<Checkpoint[]>('/api/checkpoints')
   }
 
+  // Tools
+  async listTools(): Promise<ApiResponse<Tool[]>> {
+    return this.fetch<Tool[]>('/api/tools')
+  }
+
+  async getTool(slug: string): Promise<ApiResponse<Tool>> {
+    return this.fetch<Tool>(`/api/tools/${slug}`)
+  }
+
+  async createTool(data: CreateToolRequest): Promise<ApiResponse<Tool>> {
+    return this.fetch<Tool>('/api/tools', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+  }
+
+  async deleteTool(slug: string): Promise<ApiResponse<string>> {
+    return this.fetch<string>(`/api/tools/${slug}`, { method: 'DELETE' })
+  }
+
+  async pullTool(slug: string): Promise<ApiResponse<Tool>> {
+    return this.fetch<Tool>(`/api/tools/${slug}/pull`, { method: 'POST' })
+  }
+
+  async authorizeTool(slug: string, data: AuthorizeRequest): Promise<ApiResponse<string>> {
+    return this.fetch<string>(`/api/tools/${slug}/authorize`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+  }
+
+  async revokeTool(slug: string, data: AuthorizeRequest): Promise<ApiResponse<string>> {
+    return this.fetch<string>(`/api/tools/${slug}/revoke`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+  }
+
+  async invokeTool(slug: string, data: InvokeToolRequest): Promise<ApiResponse<InvokeToolResponse>> {
+    return this.fetch<InvokeToolResponse>(`/api/tools/${slug}/invoke`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+  }
+
+  async listToolEnv(slug: string): Promise<ApiResponse<string[]>> {
+    return this.fetch<string[]>(`/api/tools/${slug}/env`)
+  }
+
+  async setToolEnv(slug: string, data: SetEnvRequest): Promise<ApiResponse<string>> {
+    return this.fetch<string>(`/api/tools/${slug}/env`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+  }
+
+  async deleteToolEnv(slug: string, key: string): Promise<ApiResponse<string>> {
+    return this.fetch<string>(`/api/tools/${slug}/env/${key}`, { method: 'DELETE' })
+  }
+
   // Skills
   async listSkills(): Promise<ApiResponse<Skill[]>> {
     return this.fetch<Skill[]>('/api/skills')
   }
 
-  async getSkill(id: string): Promise<ApiResponse<Skill>> {
-    return this.fetch<Skill>(`/api/skills/${id}`)
+  async getSkill(slug: string): Promise<ApiResponse<Skill>> {
+    return this.fetch<Skill>(`/api/skills/${slug}`)
   }
 
   async createSkill(data: CreateSkillRequest): Promise<ApiResponse<Skill>> {
@@ -281,51 +341,12 @@ class ApiClient {
     })
   }
 
-  async deleteSkill(id: string): Promise<ApiResponse<string>> {
-    return this.fetch<string>(`/api/skills/${id}`, { method: 'DELETE' })
+  async deleteSkill(slug: string): Promise<ApiResponse<string>> {
+    return this.fetch<string>(`/api/skills/${slug}`, { method: 'DELETE' })
   }
 
-  async setSkillSecret(skillId: string, data: SetSecretRequest): Promise<ApiResponse<string>> {
-    return this.fetch<string>(`/api/skills/${skillId}/secrets`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-    })
-  }
-
-  async listSkillSecrets(skillId: string): Promise<ApiResponse<string[]>> {
-    return this.fetch<string[]>(`/api/skills/${skillId}/secrets`)
-  }
-
-  async deleteSkillSecret(skillId: string, key: string): Promise<ApiResponse<string>> {
-    return this.fetch<string>(`/api/skills/${skillId}/secrets/${key}`, { method: 'DELETE' })
-  }
-
-  async authorizeSkill(skillId: string, data: AuthorizeRequest): Promise<ApiResponse<string>> {
-    return this.fetch<string>(`/api/skills/${skillId}/authorize`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-    })
-  }
-
-  async revokeSkill(skillId: string, data: AuthorizeRequest): Promise<ApiResponse<string>> {
-    return this.fetch<string>(`/api/skills/${skillId}/revoke`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-    })
-  }
-
-  async uploadSkillFile(skillId: string, data: UploadFileRequest): Promise<ApiResponse<string>> {
-    return this.fetch<string>(`/api/skills/${skillId}/files`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-    })
-  }
-
-  async invokeSkill(skillId: string, data: InvokeSkillRequest): Promise<ApiResponse<InvokeSkillResponse>> {
-    return this.fetch<InvokeSkillResponse>(`/api/skills/${skillId}/invoke`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-    })
+  async pullSkill(slug: string): Promise<ApiResponse<Skill>> {
+    return this.fetch<Skill>(`/api/skills/${slug}/pull`, { method: 'POST' })
   }
 }
 

@@ -101,7 +101,6 @@ export interface CreateApiKeyResponse {
   created_at: string
 }
 
-// Git types
 export interface GitRepository {
   id: number
   name: string
@@ -175,50 +174,68 @@ export interface CloneCheckpointRequest {
   new_name: string
 }
 
-export interface Skill {
-  id: string
+export interface Tool {
+  slug: string
   name: string
+  version: string
   description: string
-  skill_type: string
-  enabled: boolean
-  owner_agent: string
-  allowed_agents: string[]
+  forgejo_repo: string
+  git_commit: string
   entrypoint: string
+  input_schema: Record<string, unknown> | null
+  output_schema: Record<string, unknown> | null
+  author_agent: string
+  allowed_agents: string[]
+  enabled: boolean
   created_at: string
   updated_at: string
 }
 
-export interface CreateSkillRequest {
-  name: string
-  description?: string
-  skill_type: string
-  owner_agent: string
-  entrypoint: string
-  input_schema?: Record<string, unknown>
-  output_schema?: Record<string, unknown>
+export interface CreateToolRequest {
+  slug: string
+  author_agent: string
+  forgejo_repo: string
 }
 
-export interface InvokeSkillRequest {
-  caller_agent: string
+export interface InvokeToolRequest {
   input: Record<string, unknown>
+  caller_agent: string
 }
 
-export interface InvokeSkillResponse {
+export interface InvokeToolResponse {
   success: boolean
   output: Record<string, unknown> | null
   error: string | null
 }
 
-export interface SetSecretRequest {
+export interface SetEnvRequest {
   key: string
   value: string
+}
+
+export interface AuthorizeRequest {
+  agent_name: string
+}
+
+export interface Skill {
+  slug: string
+  name: string
+  version: string
+  description: string
+  forgejo_repo: string
+  git_commit: string
+  author_agent: string
+  created_at: string
+  updated_at: string
+}
+
+export interface CreateSkillRequest {
+  slug: string
+  author_agent: string
+  forgejo_repo: string
 }
 
 export interface UploadFileRequest {
   filename: string
   content: string
-}
-
-export interface AuthorizeRequest {
-  agent_name: string
 }

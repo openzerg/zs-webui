@@ -5,14 +5,14 @@ import { Agent } from '@/lib/types'
 import { api } from '@/lib/api'
 import { Button } from '@/components/Button'
 
-interface CreateSkillModalProps {
+interface CreateToolModalProps {
   isOpen: boolean
   onClose: () => void
   agents: Agent[]
   onCreated: () => void
 }
 
-export function CreateSkillModal({ isOpen, onClose, agents, onCreated }: CreateSkillModalProps) {
+export function CreateToolModal({ isOpen, onClose, agents, onCreated }: CreateToolModalProps) {
   const [slug, setSlug] = useState('')
   const [forgejoRepo, setForgejoRepo] = useState('')
   const [authorAgent, setAuthorAgent] = useState('')
@@ -29,7 +29,7 @@ export function CreateSkillModal({ isOpen, onClose, agents, onCreated }: CreateS
     setError(null)
 
     try {
-      const res = await api.createSkill({
+      const res = await api.createTool({
         slug,
         forgejo_repo: forgejoRepo,
         author_agent: authorAgent,
@@ -42,7 +42,7 @@ export function CreateSkillModal({ isOpen, onClose, agents, onCreated }: CreateS
         onCreated()
         onClose()
       } else {
-        setError(res.error || 'Failed to create skill')
+        setError(res.error || 'Failed to create tool')
       }
     } catch (e) {
       setError(String(e))
@@ -56,14 +56,14 @@ export function CreateSkillModal({ isOpen, onClose, agents, onCreated }: CreateS
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-dark border border-gray-700 rounded-lg p-6 w-full max-w-md">
-        <h3 className="text-lg font-bold mb-4">Clone Skill from Forgejo</h3>
+        <h3 className="text-lg font-bold mb-4">Clone Tool from Forgejo</h3>
         
         <div className="space-y-4">
           <div>
             <label className="block text-sm text-gray-400 mb-1">Slug</label>
             <input
               type="text"
-              placeholder="e.g., excel-xlsx"
+              placeholder="e.g., brave-search"
               value={slug}
               onChange={e => setSlug(e.target.value)}
               className="w-full bg-dark-light border border-gray-700 rounded px-3 py-2 text-white"
@@ -74,7 +74,7 @@ export function CreateSkillModal({ isOpen, onClose, agents, onCreated }: CreateS
             <label className="block text-sm text-gray-400 mb-1">Forgejo Repository</label>
             <input
               type="text"
-              placeholder="e.g., skills/excel-xlsx"
+              placeholder="e.g., tools/brave-search"
               value={forgejoRepo}
               onChange={e => setForgejoRepo(e.target.value)}
               className="w-full bg-dark-light border border-gray-700 rounded px-3 py-2 text-white"
