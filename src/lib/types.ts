@@ -199,7 +199,7 @@ export interface CreateToolRequest {
 
 export interface InvokeToolRequest {
   input: Record<string, unknown>
-  caller_agent: string
+  caller_agent?: string
 }
 
 export interface InvokeToolResponse {

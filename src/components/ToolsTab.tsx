@@ -92,9 +92,9 @@ export function ToolsTab({ agents }: ToolsTabProps) {
     if (updated) setSelectedTool(updated)
   }
 
-  const handleInvoke = async (callerAgent: string, input: Record<string, unknown>) => {
+  const handleInvoke = async (input: Record<string, unknown>) => {
     if (!selectedTool) return
-    const res = await api.invokeTool(selectedTool.slug, { caller_agent: callerAgent, input })
+    const res = await api.invokeTool(selectedTool.slug, { input })
     if (res.success) {
       alert('Tool executed successfully!')
     } else {
@@ -224,8 +224,6 @@ export function ToolsTab({ agents }: ToolsTabProps) {
       <InvokeModal
         isOpen={showInvokeModal}
         onClose={() => setShowInvokeModal(false)}
-        agents={agents}
-        allowedAgents={selectedTool?.allowed_agents || []}
         onInvoke={handleInvoke}
       />
 
