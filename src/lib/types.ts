@@ -174,3 +174,51 @@ export interface RollbackRequest {
 export interface CloneCheckpointRequest {
   new_name: string
 }
+
+export interface Skill {
+  id: string
+  name: string
+  description: string
+  skill_type: string
+  enabled: boolean
+  owner_agent: string
+  allowed_agents: string[]
+  entrypoint: string
+  created_at: string
+  updated_at: string
+}
+
+export interface CreateSkillRequest {
+  name: string
+  description?: string
+  skill_type: string
+  owner_agent: string
+  entrypoint: string
+  input_schema?: Record<string, unknown>
+  output_schema?: Record<string, unknown>
+}
+
+export interface InvokeSkillRequest {
+  caller_agent: string
+  input: Record<string, unknown>
+}
+
+export interface InvokeSkillResponse {
+  success: boolean
+  output: Record<string, unknown> | null
+  error: string | null
+}
+
+export interface SetSecretRequest {
+  key: string
+  value: string
+}
+
+export interface UploadFileRequest {
+  filename: string
+  content: string
+}
+
+export interface AuthorizeRequest {
+  agent_name: string
+}

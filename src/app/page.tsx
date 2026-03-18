@@ -10,12 +10,14 @@ import { AgentTable } from '@/components/AgentTable'
 import { CreateAgentModal } from '@/components/CreateAgentModal'
 import { GitTab } from '@/components/GitTab'
 import { LlmApiTab } from '@/components/LlmApiTab'
+import { SkillsTab } from '@/components/SkillsTab'
+import { CreateSkillModal } from '@/components/CreateSkillModal'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/Card'
 import { Button } from '@/components/Button'
-import { Plus, RefreshCw, LogOut, Server, GitBranch, Key } from 'lucide-react'
+import { Plus, RefreshCw, LogOut, Server, GitBranch, Key, BookOpen } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 
-type TabType = 'agents' | 'git' | 'llm'
+type TabType = 'agents' | 'git' | 'llm' | 'skills'
 
 export default function Dashboard() {
   const router = useRouter()
@@ -24,6 +26,7 @@ export default function Dashboard() {
   const [stats, setStats] = useState<StatsSummary | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isSkillModalOpen, setIsSkillModalOpen] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
   const [wsClient, setWsClient] = useState<WebSocketClient | null>(null)
   const [activeTab, setActiveTab] = useState<TabType>('agents')
@@ -112,6 +115,7 @@ export default function Dashboard() {
 
   const tabs: { id: TabType; label: string; icon: React.ReactNode }[] = [
     { id: 'agents', label: 'Agents', icon: <Server className="w-4 h-4" /> },
+    { id: 'skills', label: 'Skills', icon: <BookOpen className="w-4 h-4" /> },
     { id: 'git', label: 'Git', icon: <GitBranch className="w-4 h-4" /> },
     { id: 'llm', label: 'LLM API', icon: <Key className="w-4 h-4" /> },
   ]
@@ -141,6 +145,12 @@ export default function Dashboard() {
               <Button onClick={() => setIsModalOpen(true)}>
                 <Plus className="w-4 h-4 mr-2" />
                 Create Agent
+              </Button>
+            )}
+            {activeTab === 'skills' && (
+              <Button onClick={() => setIsSkillModalOpen(true)}>
+                <Plus className="w-4 h-4 mr-2" />
+                Create Skill
               </Button>
             )}
             <Button variant="danger" onClick={handleLogout}>
@@ -192,11 +202,20 @@ export default function Dashboard() {
 
         {activeTab === 'llm' && <LlmApiTab />}
 
+        {activeTab === 'skills' && <SkillsTab agents={agents} />}
+
         <CreateAgentModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           onCreate={handleCreateAgent}
           isLoading={isCreating}
+        />
+
+        <CreateSkillModal
+          isOpen={isSkillModalOpen}
+          onClose={() => setIsSkillModalOpen(false)}
+          agents={agents}
+          onCreated={fetchData}
         />
       </div>
     </div>
