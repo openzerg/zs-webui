@@ -30,18 +30,23 @@ export default function Dashboard() {
   const [isCreating, setIsCreating] = useState(false)
   const [wsClient, setWsClient] = useState<WebSocketClient | null>(null)
   const [activeTab, setActiveTab] = useState<TabType>('agents')
+  const [version, setVersion] = useState<string>('')
 
   const fetchData = useCallback(async () => {
     try {
-      const [agentsRes, statsRes] = await Promise.all([
+      const [agentsRes, statsRes, healthRes] = await Promise.all([
         api.listAgents(),
         api.getStats(),
+        fetch(`${window.location.protocol}//${window.location.hostname}:17531/health`).then(r => r.json()).catch(() => null),
       ])
       if (agentsRes.success) {
         setAgents(agentsRes.data || [])
       }
       if (statsRes.success) {
         setStats(statsRes.data)
+      }
+      if (healthRes && healthRes.version) {
+        setVersion(healthRes.version)
       }
     } catch (error) {
       console.error('Failed to fetch data:', error)
@@ -134,7 +139,7 @@ export default function Dashboard() {
         <header className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-3xl font-bold text-primary">ZS Platform</h1>
-            <p className="text-gray-400 mt-1">Agent Management Dashboard</p>
+            <p className="text-gray-400 mt-1">Agent Management Dashboard {version && <span className="text-primary">v{version}</span>}</p>
           </div>
           <div className="flex items-center gap-3">
             <Button variant="secondary" onClick={fetchData}>
