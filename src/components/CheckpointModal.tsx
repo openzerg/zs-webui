@@ -33,7 +33,7 @@ export function CheckpointModal({ isOpen, onClose, agentName, onRefresh }: Check
     try {
       const response = await api.listCheckpoints(agentName)
       if (response.success && response.data) {
-        setCheckpoints(response.data)
+        setCheckpoints(response.data as Checkpoint[])
       }
     } catch (error) {
       console.error('Failed to load checkpoints:', error)

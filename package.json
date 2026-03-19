@@ -1,10 +1,14 @@
 {
-  "name": "zs-platform-frontend",
-  "version": "0.4.1",
+  "name": "zs-webui",
+  "version": "0.9.0",
   "private": true,
   "scripts": {
     "dev": "NODE_OPTIONS='--no-warnings' next dev -p 8000",
+    "dev:swarm": "BUILD_MODE=swarm next dev -p 8000",
+    "dev:agent": "BUILD_MODE=agent next dev -p 8001",
     "build": "next build",
+    "build:swarm": "BUILD_MODE=swarm next build",
+    "build:agent": "BUILD_MODE=agent next build",
     "start": "next start -p 8000",
     "lint": "next lint"
   },

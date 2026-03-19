@@ -4,7 +4,8 @@ import { useState } from 'react'
 import { Agent } from '@/lib/types'
 import { Button } from './Button'
 import { CheckpointModal } from './CheckpointModal'
-import { Power, Trash2, ExternalLink, Clock } from 'lucide-react'
+import { AgentDetailModal } from './AgentDetailModal'
+import { Power, Trash2, ExternalLink, Clock, FolderOpen } from 'lucide-react'
 
 interface AgentTableProps {
   agents: Agent[]
@@ -16,6 +17,7 @@ interface AgentTableProps {
 
 export function AgentTable({ agents, onEnable, onDisable, onDelete, onRefresh }: AgentTableProps) {
   const [checkpointAgent, setCheckpointAgent] = useState<string | null>(null)
+  const [detailAgent, setDetailAgent] = useState<Agent | null>(null)
 
   if (agents.length === 0) {
     return (
@@ -62,6 +64,15 @@ export function AgentTable({ agents, onEnable, onDisable, onDelete, onRefresh }:
                 <td className="py-3 px-4 font-mono text-sm">{agent.container_ip}</td>
                 <td className="py-3 px-4">
                   <div className="flex items-center justify-end gap-2">
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => setDetailAgent(agent)}
+                      className="!p-2"
+                      title="Files & Tasks"
+                    >
+                      <FolderOpen className="w-4 h-4" />
+                    </Button>
                     <Button
                       variant="secondary"
                       size="sm"
@@ -114,6 +125,14 @@ export function AgentTable({ agents, onEnable, onDisable, onDelete, onRefresh }:
           onClose={() => setCheckpointAgent(null)}
           agentName={checkpointAgent}
           onRefresh={onRefresh}
+        />
+      )}
+
+      {detailAgent && (
+        <AgentDetailModal
+          isOpen={true}
+          onClose={() => setDetailAgent(null)}
+          agent={detailAgent}
         />
       )}
     </>

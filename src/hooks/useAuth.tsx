@@ -6,7 +6,7 @@ import { api } from '@/lib/api'
 interface AuthContextType {
   isAuthenticated: boolean
   isLoading: boolean
-  login: (username: string, password: string) => Promise<boolean>
+  login: (token: string) => Promise<boolean>
   logout: () => void
   error: string | null
 }
@@ -34,9 +34,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     checkAuth()
   }, [])
 
-  const login = async (username: string, password: string): Promise<boolean> => {
+  const login = async (token: string): Promise<boolean> => {
     setError(null)
-    api.setAuth(username, password)
+    api.setAuth(token)
     try {
       const result = await api.getStats()
       if (result.success) {

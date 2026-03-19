@@ -1,5 +1,5 @@
 {
-  description = "ZS WebUI - Web interface for ZS Platform";
+  description = "ZS WebUI - Web interface for Zerg Swarm and OpenZerg Agent";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
@@ -13,17 +13,24 @@
         
         packageJson = builtins.fromJSON (builtins.readFile ./package.json);
         version = packageJson.version;
-      in
-      {
-        packages.default = pkgs.buildNpmPackage {
-          pname = "zs-webui";
+        
+        buildUi = mode: pkgs.buildNpmPackage {
+          pname = "${mode}-ui";
           inherit version;
           src = ./.;
           npmDepsHash = "sha256-3hu3EwMHFLS0dKMf/C4x0yctTqTHdKJ9WqzWT+Nhh5Q=";
           nodejs = pkgs.nodejs_24;
+          npmBuildScript = "build:${mode}";
           installPhase = ''
             cp -r out $out
           '';
+        };
+      in
+      {
+        packages = {
+          default = buildUi "swarm";
+          swarm-ui = buildUi "swarm";
+          agent-ui = buildUi "agent";
         };
 
         devShells.default = pkgs.mkShell {

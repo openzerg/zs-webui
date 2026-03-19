@@ -67,7 +67,7 @@ export function ToolsTab({ agents }: ToolsTabProps) {
 
   const handleSetEnv = async (key: string, value: string) => {
     if (!selectedTool) return
-    await api.setToolEnv(selectedTool.slug, { key, value })
+    await api.setToolEnv(selectedTool.slug, key, value)
     loadEnvVars(selectedTool.slug)
   }
 
@@ -80,13 +80,13 @@ export function ToolsTab({ agents }: ToolsTabProps) {
 
   const handleAuthorize = async (agentName: string) => {
     if (!selectedTool) return
-    await api.authorizeTool(selectedTool.slug, { agent_name: agentName })
+    await api.authorizeTool(selectedTool.slug, agentName)
     loadTools()
   }
 
   const handleRevoke = async (agentName: string) => {
     if (!selectedTool) return
-    await api.revokeTool(selectedTool.slug, { agent_name: agentName })
+    await api.revokeTool(selectedTool.slug, agentName)
     loadTools()
     const updated = tools.find(t => t.slug === selectedTool.slug)
     if (updated) setSelectedTool(updated)

@@ -199,7 +199,6 @@ export interface CreateToolRequest {
 
 export interface InvokeToolRequest {
   input: Record<string, unknown>
-  caller_agent?: string
 }
 
 export interface InvokeToolResponse {
@@ -238,4 +237,117 @@ export interface CreateSkillRequest {
 export interface UploadFileRequest {
   filename: string
   content: string
+}
+
+export interface FileInfo {
+  name: string
+  path: string
+  is_dir: boolean
+  size: number
+  modified: string | null
+}
+
+export interface FileContent {
+  path: string
+  content: string
+  size: number
+}
+
+export type FileResponse = FileInfo[] | FileContent
+
+export interface SendEventRequest {
+  event_type: 'interrupt' | 'message' | 'assign_task' | 'remind'
+  data: Record<string, unknown>
+}
+
+export interface QueryRequest {
+  question: string
+}
+
+export interface Session {
+  id: string
+  purpose: string
+  state: string
+  created_at: string
+  started_at?: string
+  finished_at?: string
+  message_count: number
+}
+
+export interface Message {
+  id: string
+  session_id: string
+  role: 'user' | 'assistant' | 'system' | 'tool'
+  content: string
+  timestamp: string
+  tool_calls?: ToolCallData[]
+}
+
+export interface ToolCallData {
+  id: string
+  name: string
+  arguments: Record<string, unknown>
+  result?: Record<string, unknown>
+}
+
+export interface Process {
+  id: string
+  command: string
+  args: string[]
+  cwd: string
+  status: string
+  exit_code?: number
+  started_at: string
+  finished_at?: string
+  session_id: string
+  stdout_size: number
+  stderr_size: number
+}
+
+export interface Activity {
+  id: string
+  session_id?: string
+  activity_type: string
+  description: string
+  details: Record<string, unknown>
+  timestamp: string
+}
+
+export interface Task {
+  id: string
+  content: string
+  status: string
+  priority: string
+  session_id?: string
+  created_at: string
+  updated_at: string
+}
+
+export interface BuiltinTool {
+  name: string
+  description: string
+  parameters: Record<string, unknown>
+}
+
+export interface ToolExecutionResult {
+  title: string
+  output: string
+  metadata: Record<string, unknown>
+  attachments?: {
+    mime: string
+    url: string
+  }[]
+  truncated: boolean
+}
+
+export interface ExecuteToolRequest {
+  tool_name: string
+  args: Record<string, unknown>
+  session_id?: string
+}
+
+export interface StoredToolResult {
+  tool_call_id: string
+  output: string
+  success: boolean
 }
