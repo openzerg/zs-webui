@@ -5,6 +5,9 @@ export interface Agent {
   host_ip: string
   forgejo_username: string | null
   online: boolean
+  model_id: string | null
+  model_name: string | null
+  internal_token: string
 }
 
 export interface Checkpoint {
@@ -68,10 +71,13 @@ export interface Provider {
   created_at: string
 }
 
-export interface ApiKey {
+export interface Model {
   id: string
   name: string
   provider_id: string
+  provider_name: string
+  model_name: string
+  enabled: boolean
   created_at: string
 }
 
@@ -87,18 +93,10 @@ export interface CreateProviderRequest {
   api_key: string
 }
 
-export interface CreateApiKeyRequest {
+export interface CreateModelRequest {
   name: string
   provider_id: string
-}
-
-export interface CreateApiKeyResponse {
-  id: string
-  name: string
-  key: string
-  provider_id: string
-  provider_name: string
-  created_at: string
+  model_name: string
 }
 
 export interface GitRepository {

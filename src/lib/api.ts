@@ -1,4 +1,4 @@
-import { ApiResponse, Session, Message, Process, Activity, Task, FileInfo, FileContent, FileResponse, ForgejoUser, Provider, ApiKey, GitRepository, Collaborator, Organization, OrgMember, Tool, Skill, Checkpoint } from './types'
+import { ApiResponse, Session, Message, Process, Activity, Task, FileInfo, FileContent, FileResponse, ForgejoUser, Provider, Model, GitRepository, Collaborator, Organization, OrgMember, Tool, Skill, Checkpoint } from './types'
 
 export type ApiMode = 'swarm' | 'agent'
 
@@ -172,16 +172,25 @@ class ApiClient {
     return this.fetch(`/api/llm/providers/${id}/disable`, { method: 'POST' })
   }
 
-  async listApiKeys(): Promise<ApiResponse<ApiKey[]>> {
-    return this.fetch('/api/llm/keys')
+  // LLM Models
+  async listModels(): Promise<ApiResponse<Model[]>> {
+    return this.fetch('/api/llm/models')
   }
 
-  async createApiKey(data: { name: string; provider_id: string }): Promise<ApiResponse<{ id: string; name: string; key: string; provider_id: string; created_at: string }>> {
-    return this.fetch('/api/llm/keys', { method: 'POST', body: JSON.stringify(data) })
+  async createModel(data: { name: string; provider_id: string; model_name: string }): Promise<ApiResponse<Model>> {
+    return this.fetch('/api/llm/models', { method: 'POST', body: JSON.stringify(data) })
   }
 
-  async deleteApiKey(id: string): Promise<ApiResponse<null>> {
-    return this.fetch(`/api/llm/keys/${id}`, { method: 'DELETE' })
+  async deleteModel(id: string): Promise<ApiResponse<null>> {
+    return this.fetch(`/api/llm/models/${id}`, { method: 'DELETE' })
+  }
+
+  async enableModel(id: string): Promise<ApiResponse<null>> {
+    return this.fetch(`/api/llm/models/${id}/enable`, { method: 'POST' })
+  }
+
+  async disableModel(id: string): Promise<ApiResponse<null>> {
+    return this.fetch(`/api/llm/models/${id}/disable`, { method: 'POST' })
   }
 
   // Git Repos
